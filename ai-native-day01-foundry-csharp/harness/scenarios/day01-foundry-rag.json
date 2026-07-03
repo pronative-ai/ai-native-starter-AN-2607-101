@@ -1,0 +1,11 @@
+{
+  "scenarioId": "day01-foundry-rag-001",
+  "title": "Explain AI-native architecture using grounding",
+  "prompt": "Explain AI-native architecture for enterprise fullstack engineering in 5 concise points.",
+  "expectedLearning": [
+    "Student can call a shared model deployment.",
+    "Student can see the difference between ungrounded and grounded output.",
+    "Student can identify where telemetry should be captured."
+  ]
+}
+

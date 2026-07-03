@@ -56,7 +56,7 @@ Follows the MS Learn AI-3026 agent labs, adapted to a ProNative C# flow for live
 | 02 | `Lab02CustomToolsAgent` | Core hands-on |
 | 03 | `Lab03McpAgentClient` | Core or trainer-led |
 | 04 | `Lab04FoundryIqAgentClient` | Trainer-led |
-| 05 | `Lab05` | |
+| 05 | `Lab05` | Trainer-led: Portal practical |
 | 06 | `Lab06WorkflowClient` | Preview |
 | 07 | `Lab07AgentFrameworkSingleAgent` | Preview |
 | 08 | `Lab08AgentFrameworkMultiAgent` | Preview |
@@ -99,7 +99,7 @@ Student Device → Agent API → Agent Runner (instruction + routing)
 Both days support two modes:
 
 1. **BearerToken** — Entra / managed identity token flow (production-grade, no secrets committed)
-2. **ApiKey** — fallback for trainer-controlled demos where approved
+2. **ApiKey** — fallback for trainer-controlled demos where approved (Current option for training purpose only)
 
 ## Azure Resource Naming
 

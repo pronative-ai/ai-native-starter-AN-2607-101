@@ -1,0 +1,14 @@
+{
+  "scenarioId": "day02-agent-tool-001",
+  "title": "Agent uses a custom tool",
+  "request": {
+    "userId": "ST-2606-1000",
+    "message": "Check order PN-1001 and tell me the next action."
+  },
+  "expectedLearning": [
+    "Student can identify the agent boundary.",
+    "Student can see a custom tool call.",
+    "Student can inspect trace metadata for the agent run."
+  ]
+}
+

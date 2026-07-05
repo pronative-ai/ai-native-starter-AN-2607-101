@@ -41,8 +41,7 @@ public sealed class FoundryOpenAiV1Client
         var payload = new
         {
             model = _config.ModelDeployment,
-            messages,
-            temperature = 0.2
+            messages
         };
 
         using var response = await SendJsonAsync(HttpMethod.Post, "chat/completions", payload);
@@ -79,17 +78,44 @@ public sealed class FoundryOpenAiV1Client
         return await ExtractTextAsync(response);
     }
 
-    public async Task<string> InvokeFoundryWorkflowAsync(string workflowName, string userPrompt)
+    public async Task<string> CreateConversationAsync()
+    {
+        using var conversation = await SendJsonAsync(HttpMethod.Post, "conversations", new { items = Array.Empty<object>() });
+        var conversationJson = await conversation.Content.ReadAsStringAsync();
+        return JsonDocument.Parse(conversationJson).RootElement.GetProperty("id").GetString()
+            ?? throw new InvalidOperationException("The conversations API response did not include an id.");
+    }
+
+    public async Task AddUserMessageAsync(string conversationId, string userPrompt)
+    {
+        await SendJsonAsync(
+            HttpMethod.Post,
+            $"conversations/{conversationId}/items",
+            new { items = new[] { new { type = "message", role = "user", content = userPrompt } } });
+    }
+
+    public async Task DeleteConversationAsync(string conversationId)
     {
         if (!_config.UseLiveFoundry)
         {
-            return $"[teaching adapter] Would start Foundry workflow '{workflowName}' with: {userPrompt}";
+            return;
         }
 
-        using var conversation = await SendJsonAsync(HttpMethod.Post, "conversations", new { items = Array.Empty<object>() });
-        var conversationJson = await conversation.Content.ReadAsStringAsync();
-        var conversationId = JsonDocument.Parse(conversationJson).RootElement.GetProperty("id").GetString()
-            ?? throw new InvalidOperationException("The conversations API response did not include an id.");
+        await SendJsonAsync(HttpMethod.Delete, $"conversations/{conversationId}", payload: null);
+    }
+
+    public async Task<string> CreateAgentResponseJsonAsync(string conversationId, string agentName, object input)
+    {
+        if (!_config.UseLiveFoundry)
+        {
+            return """
+            {
+              "id": "teaching-response",
+              "output_text": "[teaching adapter] A trainer-created Foundry agent would decide whether to call one of the configured function tools.",
+              "output": []
+            }
+            """;
+        }
 
         using var response = await SendJsonAsync(
             HttpMethod.Post,
@@ -97,18 +123,82 @@ public sealed class FoundryOpenAiV1Client
             new
             {
                 conversation = conversationId,
-                input = userPrompt,
-                agent_reference = new { name = workflowName, type = "agent_reference" }
+                input,
+                agent_reference = new { name = agentName, type = "agent_reference" }
             });
 
-        return await ExtractTextAsync(response);
+        return await response.Content.ReadAsStringAsync();
     }
 
-    private async Task<HttpResponseMessage> SendJsonAsync(HttpMethod method, string relativePath, object payload)
+    public async Task<string> CreateAgentFollowUpResponseJsonAsync(string previousResponseId, string agentName, object input)
+    {
+        if (!_config.UseLiveFoundry)
+        {
+            return """
+            {
+              "id": "teaching-follow-up-response",
+              "output_text": "[teaching adapter] Function outputs would be sent back to the agent using previous_response_id.",
+              "output": []
+            }
+            """;
+        }
+
+        using var response = await SendJsonAsync(
+            HttpMethod.Post,
+            "responses",
+            new
+            {
+                previous_response_id = previousResponseId,
+                input,
+                agent_reference = new { name = agentName, type = "agent_reference" }
+            });
+
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public string ExtractTextFromJson(string json)
+    {
+        using var document = JsonDocument.Parse(json);
+        return ExtractText(document.RootElement);
+    }
+
+    public async Task<string> InvokeFoundryWorkflowAsync(string workflowName, string userPrompt)
+    {
+        if (!_config.UseLiveFoundry)
+        {
+            return $"[teaching adapter] Would start Foundry workflow '{workflowName}' with: {userPrompt}";
+        }
+
+        var conversationId = await CreateConversationAsync();
+
+        try
+        {
+            using var response = await SendJsonAsync(
+                HttpMethod.Post,
+                "responses",
+                new
+                {
+                    conversation = conversationId,
+                    input = userPrompt,
+                    agent_reference = new { name = workflowName, type = "agent_reference" }
+                });
+
+            return await ExtractTextAsync(response);
+        }
+        finally
+        {
+            await DeleteConversationAsync(conversationId);
+        }
+    }
+
+    private async Task<HttpResponseMessage> SendJsonAsync(HttpMethod method, string relativePath, object? payload)
     {
         var endpoint = _config.OpenAiV1Endpoint.TrimEnd('/');
         using var request = new HttpRequestMessage(method, $"{endpoint}/{relativePath.TrimStart('/')}");
-        request.Content = new StringContent(JsonSerializer.Serialize(payload, _jsonOptions), Encoding.UTF8, "application/json");
+        if (payload is not null)
+        {
+            request.Content = new StringContent(JsonSerializer.Serialize(payload, _jsonOptions), Encoding.UTF8, "application/json");
+        }
 
         if (!string.IsNullOrWhiteSpace(_config.ApiKey))
         {
@@ -139,6 +229,11 @@ public sealed class FoundryOpenAiV1Client
         using var document = JsonDocument.Parse(body);
         var root = document.RootElement;
 
+        return ExtractText(root);
+    }
+
+    private string ExtractText(JsonElement root)
+    {
         if (root.TryGetProperty("output_text", out var outputText))
         {
             return outputText.GetString() ?? "";
@@ -147,7 +242,7 @@ public sealed class FoundryOpenAiV1Client
         if (root.TryGetProperty("choices", out var choices) && choices.GetArrayLength() > 0)
         {
             var message = choices[0].GetProperty("message");
-            return message.TryGetProperty("content", out var content) ? content.GetString() ?? "" : body;
+            return message.TryGetProperty("content", out var content) ? content.GetString() ?? "" : root.GetRawText();
         }
 
         if (root.TryGetProperty("output", out var output))
@@ -175,6 +270,6 @@ public sealed class FoundryOpenAiV1Client
             }
         }
 
-        return body;
+        return root.GetRawText();
     }
 }

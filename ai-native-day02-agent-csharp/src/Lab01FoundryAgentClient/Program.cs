@@ -31,7 +31,7 @@ while (true)
     // 3. add a user message to the conversation.
     // 4. create a response with agent_reference = the trainer-created agent name.
     var answer = await client.InvokeFoundryAgentAsync(config.AgentName, prompt);
-    Console.WriteLine();
+    TrainingConfigConsole.PrintLlmResponseHeader();
     Console.WriteLine(answer);
-    Console.WriteLine();
+    TrainingConfigConsole.PrintLlmResponseFooter();
 }

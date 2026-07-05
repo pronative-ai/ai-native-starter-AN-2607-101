@@ -17,5 +17,6 @@ var prompt = Console.ReadLine() ?? "Summarize the latest approved product suppor
 var foundry = new FoundryOpenAiV1Client(config);
 var answer = await foundry.InvokeFoundryAgentAsync(config.AgentName, prompt);
 
-Console.WriteLine();
+TrainingConfigConsole.PrintLlmResponseHeader();
 Console.WriteLine(answer);
+TrainingConfigConsole.PrintLlmResponseFooter();

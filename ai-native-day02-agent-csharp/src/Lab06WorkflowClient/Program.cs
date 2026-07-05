@@ -4,7 +4,8 @@ var config = TrainingConfig.Load(args);
 TrainingConfigConsole.Print(config, "Lab 06 - Foundry Workflow Client");
 
 Console.WriteLine("Day 2 depth: preview/trainer-led.");
-Console.WriteLine("The trainer creates the workflow in Foundry. This C# client only shows how an app starts that workflow.");
+Console.WriteLine("The trainer creates the workflow in Foundry.");
+Console.WriteLine("This C# client mirrors the MS Learn flow: create conversation, start workflow, read result, delete conversation.");
 Console.WriteLine();
 
 Console.Write("Enter a customer support issue to triage: ");
@@ -13,5 +14,6 @@ var prompt = Console.ReadLine() ?? "Customer reports failed wallet transfer and 
 var foundry = new FoundryOpenAiV1Client(config);
 var answer = await foundry.InvokeFoundryWorkflowAsync(config.WorkflowName, prompt);
 
-Console.WriteLine();
+TrainingConfigConsole.PrintLlmResponseHeader();
 Console.WriteLine(answer);
+TrainingConfigConsole.PrintLlmResponseFooter();

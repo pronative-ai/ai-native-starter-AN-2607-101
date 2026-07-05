@@ -6,7 +6,8 @@ public sealed record TrainingConfig
 {
     public string BatchId { get; init; } = "AN-2607-101";
     public string StudentId { get; init; } = "ST-2606-1000";
-    public string OpenAiV1Endpoint { get; init; } = "https://proj-an2607101-default-resource.openai.azure.com/openai/v1";
+    public string ProjectEndpoint { get; init; } = "https://proj-an2607101-default-resource.services.ai.azure.com/api/projects/proj-an2607101-default";
+    public string OpenAiV1Endpoint { get; init; } = "https://proj-an2607101-default-resource.services.ai.azure.com/api/projects/proj-an2607101-default/openai/v1";
     public string ModelDeployment { get; init; } = "gpt-5-mini";
     public string ApiKey { get; init; } = "";
     public string BearerToken { get; init; } = "";
@@ -33,6 +34,9 @@ public sealed record TrainingConfig
     {
         BatchId = Environment.GetEnvironmentVariable("BATCH_ID") ?? BatchId,
         StudentId = Environment.GetEnvironmentVariable("STUDENT_ID") ?? StudentId,
+        ProjectEndpoint = Environment.GetEnvironmentVariable("AZURE_AI_PROJECT_ENDPOINT")
+            ?? Environment.GetEnvironmentVariable("PROJECT_ENDPOINT")
+            ?? ProjectEndpoint,
         OpenAiV1Endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_V1_ENDPOINT") ?? OpenAiV1Endpoint,
         ModelDeployment = Environment.GetEnvironmentVariable("AZURE_OPENAI_CHAT_DEPLOYMENT") ?? ModelDeployment,
         ApiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY") ?? ApiKey,
@@ -52,9 +56,30 @@ public static class TrainingConfigConsole
     {
         Console.WriteLine($"ProNative AI-Native Fullstack Engineering - Day 2 - {labName}");
         Console.WriteLine($"Batch: {config.BatchId} | Student: {config.StudentId}");
+        Console.WriteLine($"Foundry project endpoint: {config.ProjectEndpoint}");
         Console.WriteLine($"Foundry/OpenAI v1 endpoint: {config.OpenAiV1Endpoint}");
         Console.WriteLine($"Model deployment: {config.ModelDeployment}");
         Console.WriteLine($"Live Foundry calls enabled: {config.UseLiveFoundry}");
         Console.WriteLine();
+    }
+
+    public static void PrintLlmResponseHeader()
+    {
+        var original = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine();
+        Console.WriteLine("======================================== LLM Response ========================================");
+        Console.WriteLine();
+        Console.ForegroundColor = original;
+    }
+
+    public static void PrintLlmResponseFooter()
+    {
+        var original = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine();
+        Console.WriteLine("====================================== End of LLM Response ======================================");
+        Console.WriteLine();
+        Console.ForegroundColor = original;
     }
 }

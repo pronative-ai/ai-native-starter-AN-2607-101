@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <NoWarn>$(NoWarn);MAAI001</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pronative.Day03.Shared\Pronative.Day03.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Agents.AI" Version="1.13.0" />
+    <PackageReference Include="Microsoft.Agents.AI.Mcp" Version="1.13.0-alpha.260703.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="skills\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

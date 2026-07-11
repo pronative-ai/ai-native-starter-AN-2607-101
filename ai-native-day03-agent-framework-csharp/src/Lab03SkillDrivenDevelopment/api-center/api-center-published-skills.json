@@ -1,0 +1,17 @@
+{
+  "apiCenterRuntimeUrl": "https://apic-an2607101-fec2ed.data.centralindia.azure-apicenter.ms",
+  "publishedSkills": [
+    {
+      "name": "pronative-training-operations-skill",
+      "type": "skill-md",
+      "skillUri": "skill://pronative-training-operations-skill/SKILL.md",
+      "apiCenterApiName": "pronative-training-operations"
+    },
+    {
+      "name": "pronative-student-environment-skill",
+      "type": "skill-md",
+      "skillUri": "skill://pronative-student-environment-skill/SKILL.md",
+      "apiCenterApiName": "pronative-student-environment"
+    }
+  ]
+}

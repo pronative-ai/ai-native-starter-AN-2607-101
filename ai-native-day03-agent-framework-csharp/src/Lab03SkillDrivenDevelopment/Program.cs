@@ -4,6 +4,7 @@ using Pronative.Day03.Shared;
 
 var config = Day03TrainingConfig.Load(args);
 
+Day03Console.PrintAppStart();
 Day03Console.PrintHeader(config, "Lab 03 - Agent Skills");
 
 Console.WriteLine("This lab creates and consumes Agent Skills from three source types:");
@@ -82,13 +83,16 @@ Console.WriteLine();
 
 
 
-Console.WriteLine();
+Day03Console.PrintLabStart(3);
 Console.WriteLine("Trainer Checkpoint");
 Console.WriteLine("==================");
 Console.WriteLine("1. File-based skills are best for portable team-owned skill packages.");
 Console.WriteLine("2. Inline skills are good for dynamic runtime-generated skill content.");
 Console.WriteLine("3. Class-based skills are good when skill logic belongs in compiled C#.");
 Console.WriteLine("4. This lab creates and consumes skills; a later lab wires the provider into an agent.");
+Day03Console.PrintLabEnd(3);
+
+Day03Console.PrintAppEnd();
 
 // Inline skill: defines frontmatter, instructions, template resource, and a C# script function for draft follow-ups
 static AgentInlineSkill CreateSessionFollowUpInlineSkill(Day03TrainingConfig config)

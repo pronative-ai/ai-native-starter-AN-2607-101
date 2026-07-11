@@ -15,6 +15,7 @@ using Pronative.Day03.Shared;
 var config = Day03TrainingConfig.Load(args);
 var ragConfig = RetrievalGroundedRagConfig.Load(config, args);
 
+Day03Console.PrintAppStart();
 Day03Console.PrintHeader(config, "Lab 06 - Retrieval-Grounded RAG for Agentic Workflow");
 
 Console.WriteLine("This lab uses Microsoft Agent Framework and Cosmos DB directly:");
@@ -123,10 +124,11 @@ await foreach (var workflowEvent in run.WatchStreamAsync())
     }
 }
 
-Console.WriteLine();
+Day03Console.PrintLabStart(6);
 Console.WriteLine("Final Retrieval-Grounded RAG Result");
 Console.WriteLine("===================================");
 Console.WriteLine(ToJson(finalResult ?? FinalRetrievalGroundedRagResult.NoOutput(input, ragConfig)));
+Day03Console.PrintLabEnd(6);
 
 if (finalResult is not null)
 {
@@ -136,6 +138,8 @@ if (finalResult is not null)
     Console.WriteLine();
     Console.WriteLine($"Evidence artifact: {artifactPath}");
 }
+
+Day03Console.PrintAppEnd();
 
 static string ToJson(object value) => JsonSerializer.Serialize(
     value,

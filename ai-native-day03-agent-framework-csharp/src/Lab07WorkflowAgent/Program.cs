@@ -13,6 +13,7 @@ using Pronative.Day03.Shared;
 var config = Day03TrainingConfig.Load(args);
 var labConfig = WorkflowAgentLabConfig.Load(config);
 
+Day03Console.PrintAppStart();
 Day03Console.PrintHeader(config, "Lab 07 - Workflow Agent");
 
 Console.WriteLine("This lab uses Microsoft Agent Framework workflow-agent capabilities directly:");
@@ -223,13 +224,14 @@ await foreach (var workflowEvent in run.WatchStreamAsync())
     }
 }
 
-Console.WriteLine();
+Day03Console.PrintLabStart(7);
 Console.WriteLine("Structured Output Normalization");
 Console.WriteLine("===============================");
 
 var structuredResult = await BuildStructuredResultAsync(config, labConfig, request.Trim(), transcript.ToString());
 
 Console.WriteLine(ToJson(structuredResult));
+Day03Console.PrintLabEnd(7);
 
 Directory.CreateDirectory(labConfig.ArtifactsDirectory);
 var artifactPath = Path.Combine(labConfig.ArtifactsDirectory, "day03-lab07-workflow-agent-result.json");
@@ -246,6 +248,8 @@ await File.WriteAllTextAsync(
 
 Console.WriteLine();
 Console.WriteLine($"Evidence artifact: {artifactPath}");
+
+Day03Console.PrintAppEnd();
 
 static async Task<WorkflowAgentStructuredResult> BuildStructuredResultAsync(
     Day03TrainingConfig config,

@@ -13,6 +13,7 @@ using Pronative.Day03.Shared;
 
 var config = Day03TrainingConfig.Load(args);
 
+Day03Console.PrintAppStart();
 Day03Console.PrintHeader(config, "Lab 04 - Conversations, Session, Context, Storage, and Compaction");
 
 Console.WriteLine("This lab uses Microsoft Agent Framework conversation primitives:");
@@ -201,7 +202,7 @@ foreach (var message in compacted)
     Console.WriteLine($"- {message.Role}: {OneLine(message.Text)}");
 }
 
-Console.WriteLine();
+Day03Console.PrintLabStart(4);
 Console.WriteLine("Trainer Checkpoint");
 Console.WriteLine("==================");
 Console.WriteLine("1. Session is the unit of conversation continuity.");
@@ -210,6 +211,9 @@ Console.WriteLine("3. In-memory history is stored in the session and can be redu
 Console.WriteLine("4. Serialization creates a restart-safe checkpoint; treat it as sensitive data.");
 Console.WriteLine("5. Cosmos DB stores the serialized checkpoint durably; it does not replace Agent Framework memory primitives.");
 Console.WriteLine("6. Compaction is for framework-managed in-memory history; service-managed agents already manage server-side context.");
+Day03Console.PrintLabEnd(4);
+
+Day03Console.PrintAppEnd();
 
 static async Task RunTurnAsync(AIAgent agent, AgentSession session, string userMessage)
 {

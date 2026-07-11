@@ -9,6 +9,7 @@ using Pronative.Day03.Shared;
 
 var config = Day03TrainingConfig.Load(args);
 
+Day03Console.PrintAppStart();
 Day03Console.PrintHeader(config, "Lab 05 - Harness Engineering");
 
 Console.WriteLine("This lab uses the Microsoft Agent Framework Harness directly:");
@@ -176,6 +177,7 @@ Console.WriteLine();
 
 var response = await harnessAgent.RunAsync(prompt, session);
 
+Day03Console.PrintLabStart(5);
 Console.WriteLine("Step 3 - Harness response");
 Console.WriteLine("=========================");
 Console.WriteLine(response.ToString());
@@ -208,6 +210,9 @@ Console.WriteLine("Trainer acceptance check:");
 Console.WriteLine("- Code contains PackageReference Include=\"Microsoft.Agents.AI.Harness\"");
 Console.WriteLine("- Code contains AsHarnessAgent(new HarnessAgentOptions { ... })");
 Console.WriteLine("- Code contains LoopEvaluators, compaction options, tool approval, file memory/access stores, and OpenTelemetry options");
+Day03Console.PrintLabEnd(5);
+
+Day03Console.PrintAppEnd();
 
 static Uri ResolveAzureOpenAiEndpoint()
 {

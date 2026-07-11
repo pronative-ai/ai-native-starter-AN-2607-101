@@ -7,6 +7,7 @@ using Microsoft.Extensions.AI;
 using Pronative.Day03.Shared;
 
 var config = Day03TrainingConfig.Load(args);
+Day03Console.PrintAppStart();
 Day03Console.PrintHeader(config, "Lab 01 - Agentic AI Reasoning Loop");
 
 Console.WriteLine("This lab uses Microsoft Agent Framework directly:");
@@ -126,7 +127,7 @@ session.StateBag.SetValue(
 
 var run = await loopAgent.RunAsync(prompt, session);
 
-Console.WriteLine();
+Day03Console.PrintLabStart(1);
 Console.WriteLine("Agent Framework Run Result");
 Console.WriteLine("==========================");
 Console.WriteLine(run.ToString());
@@ -134,6 +135,9 @@ Console.WriteLine();
 Console.WriteLine("Session Checkpoint Boundary");
 Console.WriteLine("===========================");
 Console.WriteLine(session.StateBag.Serialize());
+Day03Console.PrintLabEnd(1);
+
+Day03Console.PrintAppEnd();
 
 static IChatClient BuildChatClientPipeline(IChatClient innerClient)
 {

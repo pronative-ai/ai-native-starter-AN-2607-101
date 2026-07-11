@@ -3,6 +3,7 @@ using Microsoft.Agents.AI.Workflows;
 using Pronative.Day03.Shared;
 
 var config = Day03TrainingConfig.Load(args);
+Day03Console.PrintAppStart();
 Day03Console.PrintHeader(config, "Lab 02 - Flow Engineering");
 
 Console.WriteLine("This lab uses Microsoft Agent Framework Workflows directly:");
@@ -87,7 +88,7 @@ await foreach (var workflowEvent in run.WatchStreamAsync())
     }
 }
 
-Console.WriteLine();
+Day03Console.PrintLabStart(2);
 Console.WriteLine("Final Flow Engineering Result");
 Console.WriteLine("=============================");
 Console.WriteLine(ToJson(finalResult ?? new FinalFlowResult(
@@ -100,6 +101,9 @@ Console.WriteLine(ToJson(finalResult ?? new FinalFlowResult(
     Approval: "not_requested",
     Summary: "The workflow ended without a typed final result.",
     NextAction: "Inspect workflow events and rerun the lab.")));
+Day03Console.PrintLabEnd(2);
+
+Day03Console.PrintAppEnd();
 
 static ExternalResponse ReadApprovalFromConsole(ExternalRequest request)
 {

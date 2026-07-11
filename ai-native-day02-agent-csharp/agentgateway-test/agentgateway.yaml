@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://agentgateway.dev/schema/config
+config:
+  adminAddr: 0.0.0.0:15000
+binds:
+- port: 80
+  listeners:
+  - routes:
+    - policies:
+        directResponse:
+          status: 200
+          body: Agent Gateway proxy is working!
+mcp:
+  port: 3000
+  targets: []
+llm:
+  port: 4000
+  models:
+  - name: Azure -PNAI-CreditAccount/*
+    provider:
+      reference: Azure -PNAI-CreditAccount
+    params:
+      model: gpt-5-mini
+  providers:
+  - name: Azure -PNAI-CreditAccount
+    provider: azure
+    params:
+      azureResourceType: foundry
+      azureProjectName: proj-an2607101-default
+      azureResourceName: proj-an2607101-default-resource
+      azureApiVersion: v1
+  virtualModels: []
+  policies:
+    apiKey:
+      keys:
+      - key: agw_sk_fdftewIbjdEb9pJLMzd2h8JrhcMTfDwI
+        metadata:
+          group: Platform
+          user: natarajan
+          id: 37054279-c704-4b9f-850d-83370468c883
+          name: Platform Team
+      mode: strict
+      location:
+        header:
+          name: authorization
+          prefix: 'Bearer '
+    cors:
+      allowOrigins:
+      - http://localhost:15000
+      allowHeaders:
+      - '*'
+      allowMethods:
+      - GET
+      - POST
+frontendPolicies:
+  http:
+    maxBufferSize: 33554432

@@ -105,3 +105,14 @@ No user input required. The lab simulates a training environment exception appro
 ## Reference
 
 - [AG-UI Documentation](https://docs.ag-ui.com/introduction)
+
+
+## Sample
+
+```md
+Prompt: students need to register for pronative.ai agent development course. create the form for this usecase.
+```
+
+example: https://a2ui-composer.ag-ui.com/
+
+

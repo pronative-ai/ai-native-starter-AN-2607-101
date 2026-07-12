@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://agentgateway.dev/schema/config
+# ProNative AI-Native Day 4 Lab 07 observability/control route.
+# Deploy this as a stricter temporary training route when you want rate-limit behavior to be visible quickly.
+config:
+  tracing:
+    otlpEndpoint: http://localhost:4317
+    randomSampling: true
+  logging:
+    level: info
+    format: json
+
+binds:
+- port: 3000
+  listeners:
+  - name: pronative-ai-native-gateway-observed
+    protocol: HTTP
+    routes:
+    - name: an2607101-observed-azure-foundry-openai
+      matches:
+      - path:
+          pathPrefix: /azure
+      policies:
+        requestHeaderModifier:
+          add:
+            x-gateway-lab: day04-lab07
+            x-gateway-control: local-rate-limit
+        localRateLimit:
+        - maxTokens: 2
+          tokensPerFill: 2
+          fillInterval: 30s
+          type: requests
+        backendAuth:
+          azure:
+            explicitConfig:
+              managedIdentity: {}
+      backends:
+      - ai:
+          name: azure-foundry
+          provider:
+            azure:
+              resourceName: proj-an2607101-default
+              projectName: proj-an2607101-default
+              resourceType: foundry
+              model: gpt-5-mini

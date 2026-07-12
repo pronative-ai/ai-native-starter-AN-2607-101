@@ -1,0 +1,32 @@
+let requestId = "<paste-x-request-id-from-lab-output>";
+let gatewayApp = "agentgateway-an2607101";
+let httpRow =
+    ContainerAppHTTPLogs
+    | where TimeGenerated > ago(24h)
+    | where ContainerAppName =~ gatewayApp
+    | where RequestId == requestId
+    | project TimeGenerated,
+              Source = "ContainerAppHTTPLogs",
+              RequestId,
+              Method,
+              Path,
+              StatusCode,
+              Details = ResponseCodeDetails,
+              DurationMs = RequestDuration,
+              Replica = ReplicaName;
+let consoleRows =
+    ContainerAppConsoleLogs_CL
+    | where TimeGenerated > ago(24h)
+    | where ContainerAppName_s =~ gatewayApp
+    | where Log_s contains requestId
+    | project TimeGenerated,
+              Source = "ContainerAppConsoleLogs_CL",
+              RequestId = requestId,
+              Method = "",
+              Path = "",
+              StatusCode = int(null),
+              Details = Log_s,
+              DurationMs = long(null),
+              Replica = ContainerGroupName_g;
+union httpRow, consoleRows
+| order by TimeGenerated asc

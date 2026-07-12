@@ -1,0 +1,33 @@
+@baseAddress = http://localhost:5000
+
+### Root helper
+GET {{baseAddress}}/
+
+### Discover the A2A Agent Card
+GET {{baseAddress}}/a2a/training-ops/v1/card
+
+### Send an A2A message
+POST {{baseAddress}}/a2a/training-ops/v1/message:stream
+Content-Type: application/json
+
+{
+  "message": {
+    "kind": "message",
+    "role": "user",
+    "parts": [
+      {
+        "kind": "text",
+        "text": "Assess Day 4 readiness for AgentGateway and protocol coverage.",
+        "metadata": {}
+      }
+    ],
+    "messageId": null,
+    "contextId": "an2607101-day04-lab03"
+  }
+}
+
+### Runtime path when routed through AgentGateway
+### Change the host to the deployed gateway endpoint when available.
+@gatewayBaseAddress = https://agentgateway-an2607101.azurecontainerapps.io
+
+GET {{gatewayBaseAddress}}/a2a/training-ops/v1/card

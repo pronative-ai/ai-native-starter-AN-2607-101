@@ -1,0 +1,32 @@
+let gatewayApp = "agentgateway-an2607101";
+let lookback = 2h;
+union isfuzzy=true
+(
+    ContainerAppHTTPLogs
+    | where TimeGenerated > ago(lookback)
+    | where ContainerAppName =~ gatewayApp
+    | where StatusCode == 429
+    | project TimeGenerated,
+              Source = "ContainerAppHTTPLogs",
+              RequestId,
+              Method,
+              Path,
+              StatusCode,
+              Details = ResponseCodeDetails,
+              DurationMs = RequestDuration
+),
+(
+    ContainerAppConsoleLogs_CL
+    | where TimeGenerated > ago(lookback)
+    | where ContainerAppName_s =~ gatewayApp
+    | where Log_s contains "http.status=429" or Log_s contains "rate limit exceeded"
+    | project TimeGenerated,
+              Source = "ContainerAppConsoleLogs_CL",
+              RequestId = extract(@"x-request-id=([A-Za-z0-9\-]+)", 1, Log_s),
+              Method = extract(@"http.method=([A-Z]+)", 1, Log_s),
+              Path = extract(@"http.path=([^ ]+)", 1, Log_s),
+              StatusCode = 429,
+              Details = Log_s,
+              DurationMs = tolong(extract(@"duration=(\d+)ms", 1, Log_s))
+)
+| order by TimeGenerated desc

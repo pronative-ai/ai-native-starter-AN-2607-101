@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pronative.MultiAgentTraining.Shared\Pronative.MultiAgentTraining.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config\agentgateway-an2607101-lab06.yaml" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

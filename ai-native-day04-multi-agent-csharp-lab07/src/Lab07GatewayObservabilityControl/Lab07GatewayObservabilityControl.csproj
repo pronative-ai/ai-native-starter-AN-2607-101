@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pronative.MultiAgentTraining.Shared\Pronative.MultiAgentTraining.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config\agentgateway-observability-control.yaml" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="observability\kql\*.kql" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

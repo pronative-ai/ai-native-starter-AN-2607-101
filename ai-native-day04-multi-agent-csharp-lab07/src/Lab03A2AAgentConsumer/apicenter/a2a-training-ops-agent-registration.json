@@ -1,0 +1,48 @@
+{
+  "assetType": "Agent",
+  "name": "training-ops-agent",
+  "title": "ProNative Training Operations A2A Agent",
+  "summary": "A2A-enabled agent for Day 4 multi-agent readiness, protocol coverage, AgentGateway readiness, and validation guidance.",
+  "description": "This registration represents the enterprise catalog entry for the ProNative Training Operations Agent. Runtime calls go to the A2A endpoint directly or through AgentGateway. Azure API Center is used for discovery, ownership, lifecycle, governance metadata, and allowed access documentation.",
+  "lifecycleStage": "Development",
+  "owner": {
+    "team": "ProNative AI Training Platform",
+    "contact": "training-platform@pronative.ai"
+  },
+  "source": {
+    "type": "Git",
+    "url": "https://github.com/pronative-ai/ai-native-day04-multi-agent-csharp/tree/main/src/Lab03A2AAgentExposure"
+  },
+  "runtime": {
+    "protocol": "A2A",
+    "binding": "HTTP+JSON",
+    "agentCardUrl": "https://agentgateway-an2607101.azurecontainerapps.io/a2a/training-ops/v1/card",
+    "messageEndpoint": "https://agentgateway-an2607101.azurecontainerapps.io/a2a/training-ops/v1/message:stream",
+    "directDevelopmentBaseUrl": "http://localhost:5000",
+    "directDevelopmentAgentCardPath": "/a2a/training-ops/v1/card"
+  },
+  "compatibility": {
+    "protocolVersion": "1.0",
+    "sdk": "A2A .NET SDK 1.0.0-preview2",
+    "providerRuntime": "Microsoft Agent Framework A2A ASP.NET Core hosting",
+    "authentication": "Development uses local unauthenticated HTTP. Azure deployment should require AgentGateway, Entra, API key, or approved route policy."
+  },
+  "governance": {
+    "allowedConsumers": [
+      "training-router-agent",
+      "curriculum-planner-agent",
+      "validation-agent"
+    ],
+    "dataClassification": "Internal training operations",
+    "notes": [
+      "Do not expose internal prompts, credentials, tenant IDs, or private implementation details.",
+      "Prefer runtime consumption through AgentGateway for logging, policy, and cost attribution."
+    ]
+  },
+  "tags": {
+    "BatchId": "AN-2607-101",
+    "LabId": "day04-lab03",
+    "Protocol": "A2A",
+    "GatewayRoute": "a2a-training-ops"
+  }
+}

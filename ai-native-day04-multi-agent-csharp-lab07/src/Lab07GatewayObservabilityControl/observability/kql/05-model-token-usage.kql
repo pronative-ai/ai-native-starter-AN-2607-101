@@ -1,0 +1,18 @@
+let gatewayApp = "agentgateway-an2607101";
+ContainerAppConsoleLogs_CL
+| where TimeGenerated > ago(2h)
+| where ContainerAppName_s =~ gatewayApp
+| where Log_s contains "gen_ai."
+| extend Route = extract(@"route=([^ ]+)", 1, Log_s)
+| extend Model = extract(@"gen_ai\.request\.model=([^ ]+)", 1, Log_s)
+| extend StatusCode = toint(extract(@"http\.status=(\d+)", 1, Log_s))
+| extend InputTokens = toint(extract(@"gen_ai\.usage\.input_tokens=(\d+)", 1, Log_s))
+| extend OutputTokens = toint(extract(@"gen_ai\.usage\.output_tokens=(\d+)", 1, Log_s))
+| extend DurationMs = tolong(extract(@"duration=(\d+)ms", 1, Log_s))
+| summarize Requests = count(),
+            Errors = countif(StatusCode >= 400),
+            InputTokens = sum(InputTokens),
+            OutputTokens = sum(OutputTokens),
+            P95DurationMs = percentile(DurationMs, 95)
+          by Route, Model, bin(TimeGenerated, 5m)
+| order by TimeGenerated desc

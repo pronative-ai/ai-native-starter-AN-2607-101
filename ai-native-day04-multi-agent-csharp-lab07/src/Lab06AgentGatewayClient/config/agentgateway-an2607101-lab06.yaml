@@ -1,0 +1,87 @@
+# yaml-language-server: $schema=https://agentgateway.dev/schema/config
+# ProNative AI-Native Day 4 Lab 06 baseline.
+# Deploy this gateway in Azure Container Apps with managed identity enabled.
+config:
+  tracing:
+    otlpEndpoint: http://localhost:4317
+    randomSampling: true
+  logging:
+    level: info
+    format: json
+
+binds:
+- port: 3000
+  listeners:
+  - name: pronative-ai-native-gateway
+    protocol: HTTP
+    routes:
+    - name: an2607101-azure-foundry-openai
+      matches:
+      - path:
+          pathPrefix: /azure
+      policies:
+        requestHeaderModifier:
+          set:
+            x-batch-id: AN-2607-101
+            x-lab-id: day04-lab06
+            x-cost-center: ProNative-AI-Native-Training
+        localRateLimit:
+        - maxTokens: 60
+          tokensPerFill: 60
+          fillInterval: 60s
+          type: requests
+        backendAuth:
+          azure:
+            explicitConfig:
+              managedIdentity: {}
+      backends:
+      - ai:
+          name: azure-foundry
+          provider:
+            azure:
+              resourceName: proj-an2607101-default
+              projectName: proj-an2607101-default
+              resourceType: foundry
+              model: gpt-5-mini
+
+    - name: an2607101-mcp-tools
+      matches:
+      - path:
+          pathPrefix: /mcp
+      policies:
+        requestHeaderModifier:
+          set:
+            x-batch-id: AN-2607-101
+            x-lab-id: day04-lab06
+            x-route-purpose: mcp-tools
+        localRateLimit:
+        - maxTokens: 120
+          tokensPerFill: 120
+          fillInterval: 60s
+          type: requests
+      backends:
+      - mcp:
+          statefulMode: Stateless
+          targets:
+          - name: training-tools-http
+            mcp:
+              host: https://mcp-tools-an2607101.azurecontainerapps.io/mcp
+
+    - name: an2607101-a2a-training-ops
+      matches:
+      - path:
+          pathPrefix: /a2a
+      policies:
+        requestHeaderModifier:
+          set:
+            x-batch-id: AN-2607-101
+            x-lab-id: day04-lab06
+            x-route-purpose: a2a-agent
+        localRateLimit:
+        - maxTokens: 60
+          tokensPerFill: 60
+          fillInterval: 60s
+          type: requests
+      backends:
+      - host: a2a-training-ops-an2607101.azurecontainerapps.io:443
+        weight: 1

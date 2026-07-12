@@ -1,0 +1,12 @@
+let gatewayApp = "agentgateway-an2607101";
+ContainerAppHTTPLogs
+| where TimeGenerated > ago(2h)
+| where ContainerAppName =~ gatewayApp
+| summarize Requests = count(),
+            Errors = countif(StatusCode >= 400),
+            RateLimited = countif(StatusCode == 429),
+            P50DurationMs = percentile(RequestDuration, 50),
+            P95DurationMs = percentile(RequestDuration, 95),
+            P99DurationMs = percentile(RequestDuration, 99)
+          by Path, bin(TimeGenerated, 5m)
+| order by TimeGenerated desc

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="A2A" Version="1.0.0-preview2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pronative.MultiAgentTraining.Shared\Pronative.MultiAgentTraining.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="apicenter\a2a-training-ops-agent-registration.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

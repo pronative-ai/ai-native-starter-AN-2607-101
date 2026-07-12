@@ -1,0 +1,12 @@
+let gatewayApp = "agentgateway-an2607101";
+ContainerAppConsoleLogs_CL
+| where TimeGenerated > ago(2h)
+| where ContainerAppName_s =~ gatewayApp
+| where Log_s contains "gateway=agentgateway" or Log_s contains "route="
+| project TimeGenerated,
+          AppName = ContainerAppName_s,
+          Revision = RevisionName_s,
+          Replica = ContainerGroupName_g,
+          Log = Log_s
+| order by TimeGenerated desc
+| take 100

@@ -1,0 +1,99 @@
+# yaml-language-server: $schema=https://agentgateway.dev/schema/config
+config:
+  adminAddr: 0.0.0.0:15000
+  database:
+    url: postgresql://postgres:postgres@postgres:5432/postgres
+  modelCatalog:
+  - file: base-costs.json
+  - file: /base-costs.json
+  tracing:
+    otlpEndpoint: http://langfuse-web:3000/api/public/otel/v1/traces
+    otlpProtocol: http
+    randomSampling: true
+    headers:
+      Authorization: '''Basic cGstbGYtYTRhYTBjMDYtYzFlNC00MzBhLTlkZjktZDYwYzFmZmRmNmRhOnNrLWxmLWIyOWJkYmUwLTZmY2ItNDY1Ni1iOGFiLWU3ZmU1ZDY1M2I5MA=='''
+binds:
+- port: 80
+  listeners:
+  - routes:
+    - policies:
+        directResponse:
+          status: 200
+          body: Agent Gateway proxy is working!
+mcp:
+  port: 3000
+  targets:
+  - name: microsoft-learn-mcp
+    mcp:
+      host: https://learn.microsoft.com/api/mcp
+  policies:
+    cors:
+      allowOrigins:
+      - http://localhost:15000
+      - http://127.0.0.1:15000
+      allowHeaders:
+      - '*'
+      allowMethods:
+      - GET
+      - POST
+      exposeHeaders:
+      - Mcp-Session-Id
+  statefulMode: stateless
+  prefixMode: null
+  failureMode: failClosed
+llm:
+  port: 4000
+  models:
+  - name: gpt-5-mini
+    provider:
+      reference: gpt
+    transformation:
+      max_completion_tokens: llmRequest.max_tokens
+      max_tokens: 'null'
+  - name: qwen2.5-0.5b-instruct-generic-cpu
+    provider:
+      reference: local-foundry
+  providers:
+  - name: gpt
+    provider: azure
+    params:
+      azureResourceType: openAI
+      azureResourceName: ${AZURE_RESOURCE_NAME:-proj-an2607101-default-resource}
+      azureApiVersion: 2024-10-21
+      apiKey: $AZURE_OPENAI_API_KEY
+  - name: local-foundry
+    provider: openai
+    params:
+      baseUrl: ${LOCAL_FOUNDRY_BASE_URL:-http://host.docker.internal:11434/v1}
+  virtualModels: []
+  policies:
+    apiKey:
+      keys:
+      - key: agw_sk_4nlgehTYDrrRIISiorPkAlWBhnNlsq3U
+        metadata:
+          user: Natarajan
+          group: Core Team
+          id: d3d7bf46-deeb-4aeb-8a5a-c6ab982a12a5
+          name: Platform Team
+      mode: strict
+      location:
+        header:
+          name: authorization
+          prefix: 'Bearer '
+    cors:
+      allowOrigins:
+      - http://localhost:15000
+      - http://127.0.0.1:15000
+      allowHeaders:
+      - '*'
+      allowMethods:
+      - GET
+      - POST
+frontendPolicies:
+  http:
+    maxBufferSize: 33554432
+  accessLog:
+    database:
+      add:
+        gen_ai.prompt: llm.prompt
+        gen_ai.completion: 'llm.completion.map(c, {"role":"assistant", "content": c})'

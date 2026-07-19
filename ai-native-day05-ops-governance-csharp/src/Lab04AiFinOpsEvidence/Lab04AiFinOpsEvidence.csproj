@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pronative.Day05.Shared\Pronative.Day05.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.21.0" />
+    <PackageReference Include="Azure.ResourceManager" Version="1.14.0" />
+    <PackageReference Include="Azure.ResourceManager.Resources" Version="1.11.2" />
+  </ItemGroup>
+</Project>

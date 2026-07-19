@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pronative.Day05.Shared\Pronative.Day05.Shared.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Lab01ObservabilityTelemetry/Lab01ObservabilityTelemetry.csproj" />
+    <Project Path="src/Lab02FoundryOperationalTrace/Lab02FoundryOperationalTrace.csproj" />
+    <Project Path="src/Lab03AgentGatewayOperationalClient/Lab03AgentGatewayOperationalClient.csproj" />
+    <Project Path="src/Lab04AiFinOpsEvidence/Lab04AiFinOpsEvidence.csproj" />
+    <Project Path="src/Lab05FoundryLocalCpu/Lab05FoundryLocalCpu.csproj" />
+    <Project Path="src/Lab06RunpodNeocloudClient/Lab06RunpodNeocloudClient.csproj" />
+    <Project Path="src/Lab07GovernancePolicyCheck/Lab07GovernancePolicyCheck.csproj" />
+    <Project Path="src/Lab08MafMcpAgent/Lab08MafMcpAgent.csproj" />
+    <Project Path="src/Pronative.Day05.Shared/Pronative.Day05.Shared.csproj" />
+  </Folder>
+</Solution>
